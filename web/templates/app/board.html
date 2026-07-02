@@ -1,0 +1,19 @@
+{% extends "app/base.html" %}
+{% block title %}Board{% endblock %}
+{% block content %}
+<h1>Kanban Board</h1>
+
+<div class="kanban">
+    {% for col_name, col_nodes in columns.items() %}
+    <div class="kanban-column">
+        <h3 class="kanban-header">{{ col_name | capitalize }} ({{ col_nodes | length }})</h3>
+        {% for n in col_nodes %}
+        <a href="/node/{{ n.id }}" class="kanban-card">
+            <span class="badge badge-{{ n.type }}">{{ n.type }}</span>
+            <strong>{{ n.title }}</strong>
+        </a>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

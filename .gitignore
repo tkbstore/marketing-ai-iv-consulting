@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+data/*.db
+data/*.jsonl
+.DS_Store
+.ruff_cache/
+.pytest_cache/
+.gstack/
+.vercel

@@ -1,0 +1,33 @@
+{% extends "app/base.html" %}
+{% block title %}{{ node.title }}{% endblock %}
+{% block content %}
+<div class="node-detail">
+    <a href="/" class="back-link">← Dashboard</a>
+    <span class="badge badge-{{ node.type }}">{{ node.type }}</span>
+    <span class="badge badge-{{ node.status }}">{{ node.status }}</span>
+    <h1>{{ node.title }}</h1>
+    <p class="description">{{ node.description }}</p>
+
+    <div class="meta-grid">
+        <div><strong>Priority:</strong> {{ node.priority }}</div>
+        <div><strong>Created:</strong> {{ node.created_at[:10] }}</div>
+        <div><strong>Updated:</strong> {{ node.updated_at[:10] }}</div>
+    </div>
+
+    {% if edges %}
+    <h2>Connections</h2>
+    <ul class="edge-list">
+        {% for e in edges %}
+        <li>
+            {{ e.rel_type }}:
+            {% if e.source_id == node.id %}
+                → <a href="/node/{{ e.target_id }}">{{ e.target_id }}</a>
+            {% else %}
+                ← <a href="/node/{{ e.source_id }}">{{ e.source_id }}</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

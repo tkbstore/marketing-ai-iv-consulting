@@ -1,0 +1,35 @@
+{% extends "app/base.html" %}
+{% block title %}AEO{% endblock %}
+{% block content %}
+<h1>AEO Evidence</h1>
+<p>AI検索エンジンでの引用エビデンスを管理します。</p>
+
+{% if evidence %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Query</th>
+            <th>Engine</th>
+            <th>Cited URL</th>
+            <th>Brand Mentioned</th>
+            <th>Snippet</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in evidence %}
+        <tr>
+            <td>{{ e.query }}</td>
+            <td>{{ e.engine }}</td>
+            <td>{% if e.cited_url %}<a href="{{ e.cited_url }}" target="_blank">{{ e.cited_url[:50] }}</a>{% else %}—{% endif %}</td>
+            <td>{{ '✓' if e.brand_mentioned else '✗' }}</td>
+            <td>{{ e.snippet[:80] if e.snippet else '—' }}</td>
+            <td>{{ e.checked_at[:10] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">No evidence collected yet. Use the API to add evidence.</p>
+{% endif %}
+{% endblock %}

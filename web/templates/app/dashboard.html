@@ -1,0 +1,67 @@
+{% extends "app/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_hypotheses }}</div>
+        <div class="stat-label">Hypotheses</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_experiments }}</div>
+        <div class="stat-label">Experiments</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ stats.total_evidence }}</div>
+        <div class="stat-label">AEO Evidence</div>
+    </div>
+</div>
+
+<section class="section">
+    <h2>Recent Hypotheses</h2>
+    {% if hypotheses %}
+    <div class="card-list">
+        {% for h in hypotheses[:10] %}
+        <a href="/node/{{ h.id }}" class="card">
+            <span class="badge badge-{{ h.status }}">{{ h.status }}</span>
+            <h3>{{ h.title }}</h3>
+            <p>{{ h.description[:100] }}</p>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty">No hypotheses yet. Create one via the API or Board.</p>
+    {% endif %}
+</section>
+
+<section class="section">
+    <h2>Recent AEO Evidence</h2>
+    {% if evidence %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Query</th>
+                <th>Engine</th>
+                <th>Cited</th>
+                <th>Brand</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in evidence %}
+            <tr>
+                <td>{{ e.query }}</td>
+                <td>{{ e.engine }}</td>
+                <td>{{ e.cited_url[:40] if e.cited_url else '—' }}</td>
+                <td>{{ '✓' if e.brand_mentioned else '✗' }}</td>
+                <td>{{ e.checked_at[:10] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No AEO evidence collected yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
