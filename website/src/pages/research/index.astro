@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { SITE_URL } from "../../data/company";
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const posts = (await getCollection("research")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
@@ -66,7 +67,7 @@ const jsonLd = [
               </span>
               <div>
                 <h2 class="heading-md">
-                  <a href={`/research/${post.id}`} style="text-decoration: none;">
+                  <a href={`${base}/research/${post.id}`} style="text-decoration: none;">
                     {post.data.title}
                   </a>
                 </h2>

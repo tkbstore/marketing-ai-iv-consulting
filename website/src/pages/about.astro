@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import { company, ceo, SITE_URL } from "../data/company";
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const title = "会社概要・代表プロフィール | 株式会社IV Consulting";
 const description =
   "株式会社IV Consultingの会社概要と代表取締役CEO大嶋敏也のプロフィール。光通信グループで20年間、経営管理・人事・内部統制・上場子会社コンサルティングを歴任。2025年7月にIV Consultingを創業。";
@@ -164,7 +165,7 @@ const jsonLd = [
           公開し、その品質でご判断いただくことを選びました。
         </p>
         <p>
-          <a href="/research">リサーチノートはこちら</a>から全文お読みいただけます。
+          <a href={`${base}/research`}>リサーチノートはこちら</a>から全文お読みいただけます。
         </p>
       </div>
     </div>

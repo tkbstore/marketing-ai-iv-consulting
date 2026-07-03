@@ -12,8 +12,10 @@ interface Props {
 
 const { title, description, jsonLd = [], ogType = "website" } = Astro.props;
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).href;
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const basePath = (path: string) => (path === "/" ? base || "/" : `${base}${path}`);
 
 // 全ページ共通の構造化データ: Organization + WebSite + Person(代表)
 const baseJsonLd = [
@@ -66,15 +68,18 @@ const baseJsonLd = [
 const allJsonLd = [...baseJsonLd, ...jsonLd];
 
 const nav = [
-  { href: "/", label: "ホーム" },
-  { href: "/about", label: "会社概要" },
-  { href: "/services", label: "サービス" },
-  { href: "/research", label: "リサーチ" },
-  { href: "/faq", label: "よくある質問" },
+  { href: basePath("/"), label: "ホーム" },
+  { href: basePath("/about"), label: "会社概要" },
+  { href: basePath("/services"), label: "サービス" },
+  { href: basePath("/research"), label: "リサーチ" },
+  { href: basePath("/faq"), label: "よくある質問" },
 ];
 
-const isCurrent = (href: string) =>
-  href === "/" ? currentPath === "/" : currentPath.startsWith(href);
+const isCurrent = (href: string) => {
+  const norm = currentPath.replace(base, "") || "/";
+  const hrefNorm = href.replace(base, "") || "/";
+  return hrefNorm === "/" ? norm === "/" : norm.startsWith(hrefNorm);
+};
 ---
 
 <!doctype html>
@@ -89,8 +94,8 @@ const isCurrent = (href: string) =>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="sitemap" href={`${base}/sitemap-index.xml`} />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
@@ -119,7 +124,7 @@ const isCurrent = (href: string) =>
   <body>
     <header class="site-header">
       <div class="container masthead">
-        <a href="/" class="masthead-brand"
+        <a href={basePath("/")} class="masthead-brand"
           ><span class="mark">IV</span> Consulting</a
         >
         <nav class="masthead-nav" aria-label="メインナビゲーション">

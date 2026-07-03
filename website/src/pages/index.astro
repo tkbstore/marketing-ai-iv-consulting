@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import { company, ceo, services } from "../data/company";
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const research = (await getCollection("research")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
@@ -37,8 +38,8 @@ const description =
         class="rise"
         style="margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap; --rise-delay: 400ms;"
       >
-        <a class="btn" href="/services">サービスを見る</a>
-        <a class="btn btn--ghost" href="/research">リサーチノート</a>
+        <a class="btn" href={`${base}/services`}>サービスを見る</a>
+        <a class="btn btn--ghost" href={`${base}/research`}>リサーチノート</a>
       </div>
       <div class="hero-meta rise" style="--rise-delay: 540ms;">
         <span>Est. 2025 — Tokyo</span>
@@ -167,7 +168,7 @@ const description =
         </p>
       </div>
       <div class="reveal" style="margin-top: 2.5rem;">
-        <a class="btn btn--ghost" href="/about">代表プロフィール・会社概要</a>
+        <a class="btn btn--ghost" href={`${base}/about`}>代表プロフィール・会社概要</a>
       </div>
     </div>
   </section>
@@ -189,7 +190,7 @@ const description =
               </span>
               <div>
                 <h3 class="heading-md">
-                  <a href={`/research/${post.id}`} style="text-decoration: none;">
+                  <a href={`${base}/research/${post.id}`} style="text-decoration: none;">
                     {post.data.title}
                   </a>
                 </h3>

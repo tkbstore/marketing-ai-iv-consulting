@@ -11,6 +11,7 @@ export async function getStaticPaths() {
   }));
 }
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const { post } = Astro.props;
 const { Content } = await render(post);
 
@@ -111,7 +112,7 @@ const jsonLd = [
         }
 
         <nav style="margin-top: var(--space-block);" aria-label="記事ナビゲーション">
-          <a class="btn btn--ghost" href="/research">リサーチノート一覧へ戻る</a>
+          <a class="btn btn--ghost" href={`${base}/research`}>リサーチノート一覧へ戻る</a>
         </nav>
       </div>
     </div>
