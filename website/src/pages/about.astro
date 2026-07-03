@@ -1,0 +1,172 @@
+---
+import Base from "../layouts/Base.astro";
+import { company, ceo, SITE_URL } from "../data/company";
+
+const title = "会社概要・代表プロフィール | 株式会社IV Consulting";
+const description =
+  "株式会社IV Consultingの会社概要と代表取締役CEO大島俊哉のプロフィール。光通信グループで20年間、経営管理・人事・内部統制・上場子会社コンサルティングを歴任。2025年7月にIV Consultingを創業。";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: title,
+    url: `${SITE_URL}/about`,
+    mainEntity: { "@id": `${SITE_URL}/#organization` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "会社概要", item: `${SITE_URL}/about` },
+    ],
+  },
+];
+---
+
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <section class="page-hero" aria-labelledby="about-heading">
+    <span class="hero-watermark" aria-hidden="true">IV</span>
+    <div class="container">
+      <p class="kicker rise">About</p>
+      <h1
+        id="about-heading"
+        class="heading-xl rise"
+        style="--rise-delay: 120ms;"
+      >
+        会社概要
+      </h1>
+    </div>
+  </section>
+
+  <section class="section" aria-label="会社情報">
+    <div class="container reveal">
+      <table class="ledger" style="max-width: 48rem;">
+        <tbody>
+          <tr>
+            <th scope="row" style="width: 10rem;">商号</th>
+            <td>{company.nameJa}（{company.nameEn}）</td>
+          </tr>
+          <tr>
+            <th scope="row">設立</th>
+            <td>{company.founded}</td>
+          </tr>
+          <tr>
+            <th scope="row">所在地</th>
+            <td>{company.location}</td>
+          </tr>
+          <tr>
+            <th scope="row">代表者</th>
+            <td>代表取締役CEO {ceo.nameJa}</td>
+          </tr>
+          <tr>
+            <th scope="row">事業内容</th>
+            <td>
+              バークシャー・ハサウェイ研究に基づく経営コンサルティング
+              （ストック収益モデル構築、資本配分アドバイザリー、
+              経営管理・コスト適正化、グループ経営・上場子会社支援）
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">グループ会社</th>
+            <td>株式会社IV Partners</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ceo-heading">
+    <div class="container">
+      <p class="kicker reveal">Representative</p>
+      <h2 id="ceo-heading" class="heading-lg reveal">
+        代表取締役CEO {ceo.nameJa}
+        <span
+          style="display: block; font-size: var(--text-label); font-family: var(--font-sans); letter-spacing: 0.28em; color: var(--ink-soft); margin-top: 0.75rem;"
+          >TOSHIYA OSHIMA</span
+        >
+      </h2>
+
+      <div class="prose reveal" style="margin-top: var(--space-block);">
+        <p>
+          2005年に株式会社光通信へ入社。以後20年間にわたり、人事本部長として
+          コーポレート人事を統括したほか、グループ戦略部門で経営管理・コスト適正化・
+          上場子会社コンサルティングを担当。総務部長、システム部長、内部統制部長を
+          歴任し、統轄部長として間接部門全体を率いた。
+        </p>
+        <p>
+          2020年6月より株式会社エフティグループ取締役。2021年3月から2025年7月まで
+          コア・コンサルティング・グループ取締役を兼任。
+        </p>
+        <p>
+          この間、個人としてウォーレン・バフェットとバークシャー・ハサウェイの
+          経営手法の研究を続け、2025年7月、その研究を事業の中核に据えた
+          株式会社IV Consultingおよび株式会社IV Partnersを創業。
+          代表取締役CEOに就任し、現在に至る。
+        </p>
+        <p>
+          <a href={ceo.linkedin} rel="noopener" target="_blank"
+            >LinkedInプロフィールを見る</a
+          >
+        </p>
+      </div>
+
+      <h3 class="heading-md reveal" style="margin-top: var(--space-section);">
+        経歴
+      </h3>
+      <div class="table-scroll reveal" style="margin-top: 1.5rem;">
+        <table class="ledger">
+        <thead>
+          <tr>
+            <th style="width: 14rem;">期間</th>
+            <th style="width: 14rem;">役職・所属</th>
+            <th>担当領域</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            ceo.career.map((c) => (
+              <tr>
+                <td style="font-variant-numeric: tabular-nums; white-space: nowrap;">
+                  {c.period}
+                </td>
+                <td>
+                  <strong>{c.role}</strong>
+                  <br />
+                  {c.org}
+                </td>
+                <td style="color: var(--ink-soft);">{c.note || "—"}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="stance-heading" style="background: var(--paper-deep);">
+    <div class="container">
+      <p class="kicker reveal">Our Stance</p>
+      <h2
+        id="stance-heading"
+        class="heading-lg reveal"
+        style="max-width: 26em;"
+      >
+        研究を公開し、その水準で選ばれる。
+      </h2>
+      <div class="prose reveal" style="margin-top: var(--space-block);">
+        <p>
+          IV Consultingは、バークシャー・ハサウェイを研究する日本のコンサルティング
+          ファームの中で、最も深い一次資料研究と実務翻訳を提供することを自らに課しています。
+          設立間もないファームである私たちは、過去の実績の代わりに研究成果そのものを
+          公開し、その品質でご判断いただくことを選びました。
+        </p>
+        <p>
+          <a href="/research">リサーチノートはこちら</a>から全文お読みいただけます。
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

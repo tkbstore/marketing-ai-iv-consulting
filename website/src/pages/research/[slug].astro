@@ -1,0 +1,119 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { company, ceo, SITE_URL } from "../../data/company";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("research");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const title = `${post.data.title} | IV Consulting リサーチノート`;
+const description = post.data.description;
+const url = `${SITE_URL}/research/${post.id}`;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.data.title,
+    description: post.data.description,
+    url,
+    datePublished: post.data.pubDate.toISOString().slice(0, 10),
+    ...(post.data.updatedDate
+      ? { dateModified: post.data.updatedDate.toISOString().slice(0, 10) }
+      : {}),
+    inLanguage: "ja",
+    author: {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#ceo`,
+      name: ceo.nameJa,
+    },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "リサーチ", item: `${SITE_URL}/research` },
+      { "@type": "ListItem", position: 3, name: post.data.title, item: url },
+    ],
+  },
+];
+---
+
+<Base title={title} description={description} jsonLd={jsonLd} ogType="article">
+  <article>
+    <header class="page-hero">
+      <span class="hero-watermark" aria-hidden="true">IV</span>
+      <div class="container">
+        <p class="kicker rise">Research Note</p>
+        <h1
+          class="heading-lg rise"
+          style="max-width: 28em; --rise-delay: 120ms;"
+        >
+          {post.data.title}
+        </h1>
+        <p
+          style="margin-top: 1.5rem; font-family: var(--font-sans); font-size: var(--text-label); letter-spacing: 0.2em; color: var(--ink-soft);"
+        >
+          <time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+            {
+              post.data.pubDate.toLocaleDateString("ja-JP", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            }
+          </time>
+          ／ {company.nameJa} {ceo.nameJa}
+        </p>
+      </div>
+    </header>
+
+    <div class="section">
+      <div class="container">
+        <div class="article-body">
+          <Content />
+        </div>
+
+        {
+          post.data.sources.length > 0 && (
+            <aside
+              aria-labelledby="sources-heading"
+              style="max-width: var(--measure); margin-top: var(--space-block); border-top: 2px solid var(--rule-strong); padding-top: 1.5rem;"
+            >
+              <h2
+                id="sources-heading"
+                style="font-family: var(--font-sans); font-size: var(--text-label); letter-spacing: 0.28em; color: var(--oxblood); font-weight: 600;"
+              >
+                一次資料・参考リンク
+              </h2>
+              <ul style="margin-top: 1rem; padding-left: 1.25rem;">
+                {post.data.sources.map((s) => (
+                  <li style="margin-top: 0.5rem;">
+                    <a href={s.url} rel="noopener" target="_blank">
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )
+        }
+
+        <nav style="margin-top: var(--space-block);" aria-label="記事ナビゲーション">
+          <a class="btn btn--ghost" href="/research">リサーチノート一覧へ戻る</a>
+        </nav>
+      </div>
+    </div>
+  </article>
+</Base>

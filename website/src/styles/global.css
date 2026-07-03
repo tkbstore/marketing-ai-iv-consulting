@@ -1,0 +1,694 @@
+/* ============================================================
+   IV Consulting — Design Tokens & Global Styles
+
+   デザインコンセプト: "The Annual Report"
+   バークシャー・ハサウェイの年次報告書を想起させる紙のエディトリアル。
+   - 素材: クリーム紙 × インク × オックスブラッド（報告書表紙の臙脂）
+   - 構造: 帳簿の罫線、番号付きセクション、財務諸表風テーブル
+   - 動き: 「ページをめくる」ように静かに。transform/opacity のみ、
+           prefers-reduced-motion で全停止。装飾のための動きは入れない
+   ============================================================ */
+
+:root {
+  /* palette — annual report paper */
+  --paper: oklch(96.5% 0.012 90);          /* クリーム紙 */
+  --paper-deep: oklch(93.5% 0.018 88);     /* 濃いめの紙（面の切替用） */
+  --ink: oklch(22% 0.015 60);              /* インク黒（わずかに温かい） */
+  --ink-soft: oklch(40% 0.015 60);
+  --oxblood: oklch(38% 0.13 20);           /* 深い臙脂 — バークシャー年次報告書の表紙 */
+  --oxblood-bright: oklch(48% 0.16 22);
+  --gold: oklch(62% 0.09 85);              /* 控えめな金 */
+  --rule: oklch(80% 0.02 85);              /* 罫線 */
+  --rule-strong: oklch(30% 0.02 60);
+
+  /* type */
+  --font-serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-sans: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  --text-hero: clamp(2.25rem, 1.4rem + 4.2vw, 4.75rem);
+  --text-label: 0.75rem;
+
+  /* rhythm */
+  --space-section: clamp(4.5rem, 3rem + 6vw, 9rem);
+  --space-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  --measure: 38em; /* 本文の行長（全角約38字） */
+
+  --duration: 250ms;
+  --duration-slow: 800ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* <details> の開閉を高さ補間するモダンブラウザ向け（非対応環境では即時開閉） */
+html {
+  interpolate-size: allow-keywords;
+}
+
+/* ---------- reset (minimal) ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: 2;
+  font-feature-settings: "palt";
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 0.3em;
+  transition: color var(--duration) var(--ease),
+    text-decoration-color var(--duration) var(--ease);
+}
+
+a:hover {
+  color: var(--oxblood-bright);
+  text-decoration-color: var(--oxblood-bright);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--oxblood);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--oxblood);
+  color: var(--paper);
+}
+
+/* 広い画面でのみ効かせる改行 */
+@media (max-width: 640px) {
+  .wide-only {
+    display: none;
+  }
+}
+
+/* ---------- motion: scroll reveal ----------
+   JSが有効な環境（html.js）でのみ初期非表示にする。
+   IntersectionObserver が .is-visible を付与してフェードアップ。 */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity var(--duration-slow) var(--ease),
+    transform var(--duration-slow) var(--ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+html.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- motion: hero entrance（初回ロード時のみ） ---------- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html.js .rise {
+  animation: rise-in var(--duration-slow) var(--ease) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .rise {
+    animation: none;
+  }
+}
+
+/* ---------- layout primitives ---------- */
+.container {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+
+.section {
+  padding-block: var(--space-section);
+}
+
+.section + .section {
+  border-top: 1px solid var(--rule);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose p + p {
+  margin-top: 1.5em;
+}
+
+/* ---------- typography components ---------- */
+
+/* 目次番号つきのセクションラベル（例: 01 — 経営哲学） */
+.kicker {
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--oxblood);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.kicker::after {
+  content: "";
+  height: 1px;
+  width: 3.5rem;
+  background: var(--oxblood);
+  opacity: 0.5;
+}
+
+.heading-xl {
+  font-size: var(--text-hero);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+}
+
+.heading-lg {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.heading-md {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.lead {
+  font-size: var(--text-lg);
+  line-height: 1.9;
+  color: var(--ink-soft);
+}
+
+/* 引用 — 株主への手紙風 */
+.epigraph {
+  border-left: 3px solid var(--oxblood);
+  padding-left: clamp(1.25rem, 3vw, 2.25rem);
+  font-size: var(--text-lg);
+  line-height: 2;
+  font-style: normal;
+}
+
+.epigraph cite {
+  display: block;
+  margin-top: 1rem;
+  font-size: var(--text-label);
+  font-family: var(--font-sans);
+  font-style: normal;
+  letter-spacing: 0.2em;
+  color: var(--ink-soft);
+}
+
+/* ---------- table (財務諸表風の罫線) ---------- */
+/* 幅の広いテーブルはこのラッパーで横スクロールさせる（本文は横スクロール禁止） */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll .ledger {
+  min-width: 40rem;
+}
+
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 2px solid var(--rule-strong);
+  border-bottom: 2px solid var(--rule-strong);
+}
+
+.ledger th,
+.ledger td {
+  padding: 1.1rem 0.5rem;
+  border-top: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+  font-weight: 500;
+}
+
+.ledger thead th {
+  border-top: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  letter-spacing: 0.2em;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--paper);
+  background: var(--oxblood);
+  border: 1px solid var(--oxblood);
+  padding: 1rem 2rem;
+  transition:
+    background var(--duration) var(--ease),
+    color var(--duration) var(--ease),
+    transform var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease);
+}
+
+.btn::after {
+  content: "→";
+  letter-spacing: 0;
+  transition: transform var(--duration) var(--ease);
+}
+
+.btn:hover::after {
+  transform: translateX(0.3rem);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px oklch(22% 0.015 60 / 0.14);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule-strong);
+}
+
+.btn--ghost:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- header / footer ---------- */
+.site-header {
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-block: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.masthead-brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+}
+
+.masthead-brand .mark {
+  color: var(--oxblood);
+}
+
+.masthead-nav {
+  display: flex;
+  gap: clamp(1rem, 2.5vw, 2.25rem);
+  flex-wrap: wrap;
+}
+
+.masthead-nav a {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+  color: var(--ink-soft);
+  position: relative;
+  padding-bottom: 0.35rem;
+}
+
+/* 下線が左から静かに引かれる */
+.masthead-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--oxblood);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration) var(--ease);
+}
+
+.masthead-nav a:hover,
+.masthead-nav a[aria-current="page"] {
+  color: var(--oxblood-bright);
+}
+
+.masthead-nav a:hover::after,
+.masthead-nav a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* モバイル: ブランドとナビを2段組みにし、ナビは横スクロール1行 */
+@media (max-width: 720px) {
+  .masthead {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding-block: 1.1rem;
+  }
+
+  .masthead-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-inline: calc(-1 * clamp(1.25rem, 4vw, 3rem));
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  .masthead-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .masthead-nav a {
+    white-space: nowrap;
+  }
+}
+
+.site-footer {
+  border-top: 2px solid var(--ink);
+  background: var(--paper-deep);
+  padding-block: var(--space-block);
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.site-footer .cols {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- page hero ---------- */
+.page-hero {
+  position: relative;
+  padding-block: var(--space-section);
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+/* 報告書表紙の透かし: 大きな "IV" モノグラム */
+.hero-watermark {
+  position: absolute;
+  right: -0.08em;
+  bottom: -0.34em;
+  font-size: clamp(14rem, 32vw, 30rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--oxblood);
+  opacity: 0.06;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 表紙下部のメタ情報（EST. 2025 / TOKYO ...） */
+.hero-meta {
+  display: flex;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  flex-wrap: wrap;
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--ink-soft);
+}
+
+/* ---------- cards / list rows ---------- */
+.row-list {
+  border-top: 2px solid var(--rule-strong);
+}
+
+.row-item {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding-block: var(--space-block);
+  padding-inline: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  transition: background var(--duration) var(--ease);
+}
+
+/* ホバーで帳簿の行に指を置いたように: 左に臙脂の付箋線 + 紙面をわずかに沈める */
+.row-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: -1px;
+  width: 3px;
+  background: var(--oxblood);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--duration) var(--ease);
+}
+
+.row-item:hover {
+  background: var(--paper-deep);
+}
+
+.row-item:hover::before {
+  transform: scaleY(1);
+}
+
+.row-item .no {
+  font-size: var(--text-lg);
+  color: var(--oxblood);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: transform var(--duration) var(--ease);
+}
+
+.row-item:hover .no {
+  transform: translateX(0.35rem);
+}
+
+@media (max-width: 640px) {
+  .row-item {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* ---------- FAQ (details) ---------- */
+.faq-item {
+  border-bottom: 1px solid var(--rule);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding-block: 1.75rem;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "＋";
+  color: var(--oxblood);
+  flex-shrink: 0;
+  transition: transform var(--duration) var(--ease);
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq-item summary:hover {
+  color: var(--oxblood-bright);
+}
+
+/* 開閉を高さ+不透明度で補間（interpolate-size 対応ブラウザ）。
+   非対応環境では従来どおり即時開閉するだけで壊れない */
+.faq-item::details-content {
+  opacity: 0;
+  block-size: 0;
+  overflow-y: clip;
+  transition:
+    content-visibility var(--duration-slow) allow-discrete,
+    opacity var(--duration-slow) var(--ease),
+    block-size var(--duration-slow) var(--ease);
+}
+
+.faq-item[open]::details-content {
+  opacity: 1;
+  block-size: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item::details-content {
+    transition: none;
+  }
+}
+
+.faq-item .answer {
+  padding-bottom: 2rem;
+  max-width: var(--measure);
+  color: var(--ink-soft);
+}
+
+/* ---------- research article ---------- */
+.article-body {
+  max-width: var(--measure);
+}
+
+.article-body h2 {
+  font-size: var(--text-xl);
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+  line-height: 1.5;
+}
+
+.article-body h3 {
+  font-size: var(--text-lg);
+  margin-top: 2em;
+  margin-bottom: 0.8em;
+}
+
+.article-body p {
+  margin-block: 1.5em;
+}
+
+.article-body ul,
+.article-body ol {
+  margin-block: 1.5em;
+  padding-left: 1.5em;
+}
+
+.article-body li + li {
+  margin-top: 0.6em;
+}
+
+.article-body blockquote {
+  border-left: 3px solid var(--oxblood);
+  padding-left: 1.5rem;
+  margin-block: 2em;
+  color: var(--ink-soft);
+}
+
+.article-body hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin-block: 3em;
+}
+
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 2px solid var(--rule-strong);
+  border-bottom: 2px solid var(--rule-strong);
+  margin-block: 2em;
+  font-size: 0.9375rem;
+}
+
+/* Markdown由来のテーブルは狭い画面で自身がスクロールする（本文の横スクロール禁止） */
+@media (max-width: 640px) {
+  .article-body table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+}
+
+.article-body th,
+.article-body td {
+  padding: 0.9rem 0.5rem;
+  border-top: 1px solid var(--rule);
+  text-align: left;
+}

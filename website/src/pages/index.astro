@@ -1,0 +1,238 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { company, ceo, services } from "../data/company";
+
+const research = (await getCollection("research")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const title = "株式会社IV Consulting | バークシャー・ハサウェイ研究に基づく経営コンサルティング";
+const description =
+  "株式会社IV Consultingは、バークシャー・ハサウェイの経営手法とウォーレン・バフェットの投資哲学を研究し、ストック収益モデル構築・資本配分・経営管理を支援する東京のコンサルティングファームです。代表取締役CEOは大島俊哉。";
+---
+
+<Base title={title} description={description}>
+  <!-- Hero: 年次報告書の表紙のように -->
+  <section class="page-hero" aria-labelledby="hero-heading">
+    <span class="hero-watermark" aria-hidden="true">IV</span>
+    <div class="container">
+      <p class="kicker rise">Investment Philosophy × Value Creation</p>
+      <h1
+        id="hero-heading"
+        class="heading-xl rise"
+        style="max-width: 22em; --rise-delay: 120ms;"
+      >
+        永続する収益構造を、<br class="wide-only" />設計する。
+      </h1>
+      <div class="prose rise" style="margin-top: 2.5rem; --rise-delay: 260ms;">
+        <p class="lead">
+          IV Consultingは、バークシャー・ハサウェイの経営手法を研究し、
+          その原則を日本企業の実務に翻訳するコンサルティングファームです。
+          ストック収益の設計、規律ある資本配分、オーナー志向の経営管理——
+          流行ではなく、半世紀検証され続けた原則で企業価値に向き合います。
+        </p>
+      </div>
+      <div
+        class="rise"
+        style="margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap; --rise-delay: 400ms;"
+      >
+        <a class="btn" href="/services">サービスを見る</a>
+        <a class="btn btn--ghost" href="/research">リサーチノート</a>
+      </div>
+      <div class="hero-meta rise" style="--rise-delay: 540ms;">
+        <span>Est. 2025 — Tokyo</span>
+        <span>Research-Driven Consulting</span>
+        <span>Stock Revenue × Capital Allocation</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 哲学 -->
+  <section class="section" aria-labelledby="philosophy-heading">
+    <div class="container">
+      <p class="kicker reveal">01 — Philosophy</p>
+      <h2
+        id="philosophy-heading"
+        class="heading-lg reveal"
+        style="max-width: 24em;"
+      >
+        私たちが研究し、実装する原則
+      </h2>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: clamp(2rem, 4vw, 4rem); margin-top: var(--space-block);"
+      >
+        <div class="reveal">
+          <h3 class="heading-md" style="color: var(--oxblood);">ストックで稼ぐ</h3>
+          <p style="margin-top: 1rem; color: var(--ink-soft);">
+            一度きりの売上ではなく、契約が続く限り積み上がる経常収益。
+            バークシャーの保険フロートに学び、先にキャッシュが入り
+            永く続く事業構造をつくります。
+          </p>
+        </div>
+        <div class="reveal" style="--reveal-delay: 120ms;">
+          <h3 class="heading-md" style="color: var(--oxblood);">資本配分に規律を</h3>
+          <p style="margin-top: 1rem; color: var(--ink-soft);">
+            利益の使い道——再投資・買収・自社株買い・配当——こそ
+            経営者の最重要業務。1株あたり内在価値を物差しに、
+            意思決定に規律を持ち込みます。
+          </p>
+        </div>
+        <div class="reveal" style="--reveal-delay: 240ms;">
+          <h3 class="heading-md" style="color: var(--oxblood);">オーナーの視点で</h3>
+          <p style="margin-top: 1rem; color: var(--ink-soft);">
+            経営者は株主資本の受託者である。この前提に立ち、
+            コストに厳しく、開示に誠実で、短期の数字合わせをしない
+            経営管理体制を設計します。
+          </p>
+        </div>
+      </div>
+
+      <figure
+        class="epigraph reveal"
+        style="margin-top: var(--space-section); max-width: 42em;"
+      >
+        <blockquote>
+          <p>
+            Someone's sitting in the shade today because someone planted a tree
+            a long time ago.<br />
+            <span style="color: var(--ink-soft); font-size: 0.9375rem;"
+              >今日誰かが木陰で涼めるのは、ずっと昔に誰かが木を植えたからだ。</span
+            >
+          </p>
+        </blockquote>
+        <cite>— Warren Buffett</cite>
+      </figure>
+    </div>
+  </section>
+
+  <!-- サービス -->
+  <section class="section" aria-labelledby="services-heading">
+    <div class="container">
+      <p class="kicker reveal">02 — Services</p>
+      <h2 id="services-heading" class="heading-lg reveal">サービス</h2>
+      <div class="row-list" style="margin-top: var(--space-block);">
+        {
+          services.map((s) => (
+            <article class="row-item reveal">
+              <span class="no" aria-hidden="true">{s.no}</span>
+              <div>
+                <h3 class="heading-md">{s.title}</h3>
+                <p style="margin-top: 0.5rem; color: var(--oxblood); font-weight: 600;">
+                  {s.lead}
+                </p>
+                <p class="prose" style="margin-top: 1rem; color: var(--ink-soft);">
+                  {s.body}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CEOレター: 株主への手紙スタイル -->
+  <section class="section" aria-labelledby="letter-heading" style="background: var(--paper-deep);">
+    <div class="container">
+      <p class="kicker reveal">03 — A Letter from the CEO</p>
+      <h2
+        id="letter-heading"
+        class="heading-lg reveal"
+        style="max-width: 24em;"
+      >
+        ご覧いただいている皆さまへ
+      </h2>
+      <div class="prose reveal" style="margin-top: var(--space-block);">
+        <p>
+          私は2005年から20年間、光通信グループで経営管理・人事・内部統制・上場子会社の
+          コンサルティングに携わってきました。数字と現場の両方を見続けた20年で確信したのは、
+          企業の強さを決めるのは奇抜な戦略ではなく、
+          <strong>収益の「構造」と資本の「使い方」</strong>だということです。
+        </p>
+        <p>
+          その確信を最も体系的に実証してきた企業が、バークシャー・ハサウェイでした。
+          私は同社の株主への手紙とアニュアルレポートを60年分研究し、
+          その原則を日本の会社法・税制・商習慣の中で機能する形に翻訳する仕事を、
+          この会社の事業として選びました。
+        </p>
+        <p>
+          IV Consultingは設立間もないファームです。だからこそ、私たちは研究の中身を
+          隠しません。リサーチノートを公開し、その水準でご判断いただく——
+          それが、実績を語る前の私たちにできる最も誠実な提案だと考えています。
+        </p>
+        <p style="margin-top: 2.5rem;">
+          株式会社IV Consulting<br />
+          代表取締役CEO <strong style="font-size: 1.25em;">大島 俊哉</strong>
+        </p>
+      </div>
+      <div class="reveal" style="margin-top: 2.5rem;">
+        <a class="btn btn--ghost" href="/about">代表プロフィール・会社概要</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- リサーチ -->
+  <section class="section" aria-labelledby="research-heading">
+    <div class="container">
+      <p class="kicker reveal">04 — Research</p>
+      <h2 id="research-heading" class="heading-lg reveal">リサーチノート</h2>
+      <p class="prose lead reveal" style="margin-top: 1.5rem;">
+        バークシャー・ハサウェイの一次資料に基づく研究成果を公開しています。
+      </p>
+      <div class="row-list" style="margin-top: var(--space-block);">
+        {
+          research.map((post, i) => (
+            <article class="row-item reveal">
+              <span class="no" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <h3 class="heading-md">
+                  <a href={`/research/${post.id}`} style="text-decoration: none;">
+                    {post.data.title}
+                  </a>
+                </h3>
+                <p class="prose" style="margin-top: 0.75rem; color: var(--ink-soft);">
+                  {post.data.description}
+                </p>
+                <p
+                  style="margin-top: 1rem; font-family: var(--font-sans); font-size: var(--text-label); letter-spacing: 0.2em; color: var(--ink-soft);"
+                >
+                  <time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+                    {post.data.pubDate.toLocaleDateString("ja-JP", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" aria-labelledby="contact-heading">
+    <div class="container" style="text-align: center;">
+      <h2 id="contact-heading" class="heading-lg reveal">
+        収益構造の話を、始めませんか。
+      </h2>
+      <p
+        class="lead reveal"
+        style="max-width: var(--measure); margin: 1.5rem auto 0; --reveal-delay: 120ms;"
+      >
+        初回のご相談では、貴社のストック収益比率と資本配分の現状を
+        バークシャーの物差しで棚卸しします。
+      </p>
+      <div class="reveal" style="margin-top: 2.5rem; --reveal-delay: 240ms;">
+        <a class="btn" href={ceo.linkedin} rel="noopener" target="_blank"
+          >LinkedInで問い合わせる</a
+        >
+      </div>
+    </div>
+  </section>
+</Base>

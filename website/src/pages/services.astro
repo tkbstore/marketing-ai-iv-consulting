@@ -1,0 +1,116 @@
+---
+import Base from "../layouts/Base.astro";
+import { services, ceo, SITE_URL } from "../data/company";
+
+const title = "サービス | 株式会社IV Consulting";
+const description =
+  "IV Consultingのコンサルティングサービス。ストック収益モデル構築、資本配分（キャピタル・アロケーション）アドバイザリー、経営管理・コスト適正化、グループ経営・上場子会社支援の4領域で、バークシャー・ハサウェイ研究の知見を経営に実装します。";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ホーム", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "サービス", item: `${SITE_URL}/services` },
+    ],
+  },
+  ...services.map((s) => ({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: s.title,
+    description: s.body,
+    provider: { "@id": `${SITE_URL}/#organization` },
+    areaServed: "JP",
+    serviceType: "経営コンサルティング",
+  })),
+];
+---
+
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <section class="page-hero" aria-labelledby="services-heading">
+    <span class="hero-watermark" aria-hidden="true">IV</span>
+    <div class="container">
+      <p class="kicker rise">Services</p>
+      <h1
+        id="services-heading"
+        class="heading-xl rise"
+        style="--rise-delay: 120ms;"
+      >
+        サービス
+      </h1>
+      <p class="prose lead rise" style="margin-top: 2rem; --rise-delay: 260ms;">
+        4つの領域すべてに共通するのは、バークシャー・ハサウェイの一次資料研究と、
+        代表・大島が光通信グループで積んだ20年の経営管理実務です。
+        原則は研究から、実装は実務から——この二層で支援します。
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-label="サービス一覧">
+    <div class="container">
+      <div class="row-list">
+        {
+          services.map((s) => (
+            <article class="row-item reveal" id={`service-${s.no}`}>
+              <span class="no" aria-hidden="true">{s.no}</span>
+              <div>
+                <h2 class="heading-md">{s.title}</h2>
+                <p style="margin-top: 0.5rem; color: var(--oxblood); font-weight: 600;">
+                  {s.lead}
+                </p>
+                <p class="prose" style="margin-top: 1rem; color: var(--ink-soft);">
+                  {s.body}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="engagement-heading">
+    <div class="container">
+      <p class="kicker reveal">Engagement</p>
+      <h2 id="engagement-heading" class="heading-lg reveal">進め方</h2>
+      <div class="row-list" style="margin-top: var(--space-block);">
+        <div class="row-item reveal">
+          <span class="no" aria-hidden="true">Ⅰ</span>
+          <div>
+            <h3 class="heading-md">棚卸し（初回相談）</h3>
+            <p class="prose" style="margin-top: 0.75rem; color: var(--ink-soft);">
+              貴社の収益構造（フロー／ストック比率）と過去の資本配分を、
+              バークシャーの物差しで棚卸しします。現在地を1枚の資料に整理します。
+            </p>
+          </div>
+        </div>
+        <div class="row-item reveal">
+          <span class="no" aria-hidden="true">Ⅱ</span>
+          <div>
+            <h3 class="heading-md">原則の設計</h3>
+            <p class="prose" style="margin-top: 0.75rem; color: var(--ink-soft);">
+              貴社版の「オーナーズ・マニュアル」——自社を測る物差し、資本配分の順位、
+              やらないことの宣言——を経営陣と共に明文化します。
+            </p>
+          </div>
+        </div>
+        <div class="row-item reveal">
+          <span class="no" aria-hidden="true">Ⅲ</span>
+          <div>
+            <h3 class="heading-md">実装と伴走</h3>
+            <p class="prose" style="margin-top: 0.75rem; color: var(--ink-soft);">
+              管理会計・KPI・会議体に原則を組み込み、月次で運用に伴走します。
+              原則が定着するまでが支援範囲です。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: var(--space-block);">
+        <a class="btn" href={ceo.linkedin} rel="noopener" target="_blank"
+          >LinkedInで問い合わせる</a
+        >
+      </div>
+    </div>
+  </section>
+</Base>

@@ -36,6 +36,16 @@ python -m web         # http://localhost:8501
 | Map | `/map` | GPRテリトリーマップ（sighted-mcp-platform連携） |
 | Node Detail | `/node/{id}` | 仮説/実験/エビデンス詳細 + 実験生成 |
 
+## Corporate Website (`website/`)
+
+Astro製の完全静的コーポレートサイト（JSゼロ、AEO最適化済み）。
+- 起動: `cd website && npm install && npm run dev`（http://localhost:4321）
+- コンテンツ更新: `website/src/data/company.ts`（会社情報・FAQ・サービス）、`website/src/content/research/*.md`（リサーチ記事）
+- AEO: JSON-LD（Organization/Person/FAQPage/Article/Service）、AIクローラー許可の`public/robots.txt`、sitemap自動生成（llms.txtは不採用 — ユーザー方針）
+- デザイン: バークシャー・ハサウェイ年次報告書調（クリーム紙×オックスブラッド、Shippori Mincho）
+- 注意: 代表経歴はLinkedIn公開情報の事実のみ。光通信の株式保有には一切言及しない
+- ドメイン確定後: `astro.config.mjs` / `src/data/company.ts` / `public/robots.txt` のURL差し替え（詳細は `website/README.md`）
+
 ## Architecture
 
 - **MCP Servers**: 各プラットフォームのAPI接続（独立起動可能）
