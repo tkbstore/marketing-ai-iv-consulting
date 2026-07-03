@@ -4,7 +4,7 @@
 仮説検証ラボ + GA4/GSC/Meta Ads接続 + AEO(AI検索最適化) + 広告効果ダッシュボード。
 
 クライアント: IV Consulting（コンサルティング会社）
-代表: 大島 俊哉（Toshiya Oshima）
+代表: 大嶋 敏也（Toshiya Oshima）
 LinkedIn: https://www.linkedin.com/in/toshiya-oshima-95220958/
 ドメイン: TBD
 

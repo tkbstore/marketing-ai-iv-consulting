@@ -18,7 +18,7 @@ def seed_all() -> None:
     h2 = db.create_node(
         "hypothesis",
         "LinkedInコンテンツ発信が代表のパーソナルブランディングとリード獲得を同時に実現",
-        description="大島氏のLinkedInでの業界知見発信が、IV Consultingの認知度向上と"
+        description="大嶋氏のLinkedInでの業界知見発信が、IV Consultingの認知度向上と"
                     "インバウンドリード獲得の両方に寄与する仮説。",
         status="draft",
         tags=["linkedin", "personal-branding", "lead-gen"],
@@ -47,7 +47,7 @@ def seed_all() -> None:
     e2 = db.create_node(
         "experiment",
         "LinkedIn投稿テスト: 週3回×4週間の業界知見投稿",
-        description="大島氏のLinkedInアカウントで業界知見を週3回投稿し、"
+        description="大嶋氏のLinkedInアカウントで業界知見を週3回投稿し、"
                     "インプレッション・エンゲージメント・プロフィール訪問数の変化を計測。",
         status="draft",
         parent_id=h2["id"],
